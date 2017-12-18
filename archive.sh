@@ -34,29 +34,35 @@ for t in "${array[@]}"
         condition_archive="timestamp < NOW() - INTERVAL $days_archive DAY"
         echo "archiving $t"
         eval pt-archiver --source h=$host,D=$database,t=$t,p=$password,u=$user --dest h=127.0.0.1,D=hawkeyeBUP --where "'$condition_archive'" --limit 10000 --commit-each --replace  --no-check-charset --no-delete --progress 1 --statistics --why-quit --retries 5 --optimize=s
+
+
+        #if command is failed dont purge
         if [ $? -eq 0 ]; then
-            echo OK
-            exit
+            echo "done archiving"
+
+            #execute purge
+            echo "executing data purging........"
+            getArray "config/tables.txt"
+            for t in "${array[@]}"
+                do
+            #         if [ $t = "api_user" ]
+            #            then
+            #                condition_purge="date_created < NOW() - INTERVAL 180 DAY"
+            #            else
+            #                condition_purge="timestamp < NOW() - INTERVAL 180 DAY"
+            #         fi
+                     condition_purge="timestamp < NOW() - INTERVAL $days_purge DAY"
+                     echo "purging $t"
+                     eval pt-archiver --source h=$host,D=$database,t=$t,p=$password,u=$user --where "'$condition_purge'" --purge --limit 10000 --commit-each --primary-key-only --no-check-charset --header --statistics --why-quit --retries 5 --optimize=sD
+                done
+            echo "done purging"
+
         else
-            echo FAIL
+            echo FAILED
             exit
         fi
 
     done
-echo "done archiving"
-#execute purge
-echo "executing data purging........"
-getArray "config/tables.txt"
-for t in "${array[@]}"
-    do
-#         if [ $t = "api_user" ]
-#            then
-#                condition_purge="date_created < NOW() - INTERVAL 180 DAY"
-#            else
-#                condition_purge="timestamp < NOW() - INTERVAL 180 DAY"
-#         fi
-         condition_purge="timestamp < NOW() - INTERVAL $days_purge DAY"
-         echo "purging $t"
-         eval pt-archiver --source h=$host,D=$database,t=$t,p=$password,u=$user --where "'$condition_purge'" --purge --limit 10000 --commit-each --primary-key-only --no-check-charset --header --statistics --why-quit --retries 5 --optimize=sD
-    done
-echo "done purging"
+
+
+
