@@ -1,6 +1,6 @@
 #!/bin/bash
 JQ=/usr/local/bin/jq
-env="config/$1.json"
+env="config/environment/$1.json"
 
 getArray() {
     array=() # Create array

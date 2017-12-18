@@ -1,6 +1,6 @@
 #!/bin/bash
 JQ=/usr/local/bin/jq
-env="config/development.json"
+env="config/environment/development.json"
 
 host=($(jq -r '.host' $env))
 database=($(jq -r '.database' $env))
