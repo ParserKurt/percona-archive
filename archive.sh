@@ -1,6 +1,6 @@
 #!/bin/bash
 JQ=/usr/local/bin/jq
-env="config/staging.json"
+env="config/environment/staging.json"
 
 host=($(jq -r '.host' $env))
 database=($(jq -r '.database' $env))
