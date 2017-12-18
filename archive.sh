@@ -33,8 +33,16 @@ for t in "${array[@]}"
 #        fi
         condition_archive="timestamp < NOW() - INTERVAL $days_archive DAY"
         echo "archiving $t"
-        eval pt-archiver --source h=$host,D=$database,t=$t,p=$password,u=$user --dest h=127.0.0.1,D=hawkeyeBUP --where "'$condition_archive'" --limit 10000 --commit-each --replace  --no-check-charset --no-delete --progress 1 --statistics --why-quit --retries 5 --optimize=s
+       if eval pt-archiver --source h=$host,D=$database,t=$t,p=$password,u=$user --dest h=127.0.0.1,D=hawkeyeBUP --where "'$condition_archive'" --limit 10000 --commit-each --replace  --no-check-charset --no-delete --progress 1 --statistics --why-quit --retries 5 --optimize=s;
+       then
+           echo "success"
+       fi
+       else
+            echo "failed"
+            exit
     done
+
+
 echo "done archiving"
 #execute purge
 echo "executing data purging........"
