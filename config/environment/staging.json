@@ -1,0 +1,13 @@
+{
+	"host": "127.0.0.1",
+	"database": "hawkeye-purging.clxybluj7kyg.ap-southeast-1.rds.amazonaws.com",
+	"table": "autdit_log",
+	"user": "hawkeye",
+	"password": "dc0EVoRYheU0",
+	"file": "/var/log/archiver/",
+	"days_archive": 30,
+	"days_purge": 20,
+	"condition_archive": "timestamp < NOW() - INTERVAL  DAY",
+	"condition_purge": "timestamp < NOW() - INTERVAL  DAY"
+}
+
